@@ -19,7 +19,7 @@
  "200": {
  "description": "A successful response.",
  "schema": {
- "$ref": "#/definitions/CreateImportTaskResponse"
+ "$ref": "#/definitions/ImportTask"
  }
  },
  "default": {
@@ -163,16 +163,6 @@
  }
  },
  "title": "Create import task request"
- },
- "CreateImportTaskResponse": {
- "type": "object",
- "properties": {
- "importTask": {
- "$ref": "#/definitions/ImportTask",
- "title": "created import task"
- }
- },
- "title": "Create import task response"
  },
  "ImportTask": {
  "type": "object",
