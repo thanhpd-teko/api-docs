@@ -1,286 +1,314 @@
 {
- "swagger": "2.0",
- "info": {
- "title": "fraud_detector",
- "version": "v1"
- },
- "consumes": [
- "application/json"
- ],
- "produces": [
- "application/json"
- ],
- "paths": {
- "/api/v1/import-tasks": {
- "post": {
- "summary": "Create import task",
- "operationId": "CreateImportTask",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/ImportTask"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "body",
- "in": "body",
- "required": true,
- "schema": {
- "$ref": "#/definitions/CreateImportTaskRequest"
- }
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- },
- "/api/v1/phone-status": {
- "get": {
- "summary": "Get phone status",
- "operationId": "GetPhoneStatus",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/PhoneStatus"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "platformId",
- "description": "platform id.",
- "in": "query",
- "required": false,
- "type": "integer",
- "format": "int32"
- },
- {
- "name": "phoneNumber",
- "description": "phone number to get.",
- "in": "query",
- "required": false,
- "type": "string"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- },
- "put": {
- "summary": "Create/update phone status",
- "operationId": "UpdatePhoneStatus",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/PhoneStatus"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "body",
- "in": "body",
- "required": true,
- "schema": {
- "$ref": "#/definitions/UpdatePhoneStatusRequest"
- }
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- }
- },
- "definitions": {
- "protobufAny": {
- "type": "object",
- "properties": {
- "typeUrl": {
- "type": "string"
- },
- "value": {
- "type": "string",
- "format": "byte"
- }
- }
- },
- "runtimeError": {
- "type": "object",
- "properties": {
- "error": {
- "type": "string"
- },
- "code": {
- "type": "integer",
- "format": "int32"
- },
- "message": {
- "type": "string"
- },
- "details": {
- "type": "array",
- "items": {
- "$ref": "#/definitions/protobufAny"
- }
- }
- }
- },
- "CreateImportTaskRequest": {
- "type": "object",
- "properties": {
- "fileUrl": {
- "type": "string",
- "title": "url to get excel file"
- },
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "platform id"
- }
- },
- "title": "Create import task request"
- },
- "ImportTask": {
- "type": "object",
- "properties": {
- "id": {
- "type": "integer",
- "format": "int32",
- "title": "import task id"
- },
- "fileUrl": {
- "type": "string",
- "title": "import task file url"
- },
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "platform_id"
- },
- "status": {
- "$ref": "#/definitions/ImportTaskStatus"
- },
- "note": {
- "type": "string",
- "title": "task note"
- },
- "elapsedTime": {
- "type": "integer",
- "format": "int32",
- "title": "total executed time of task"
- },
- "creatorId": {
- "type": "string",
- "title": "iam id of creator user"
- },
- "createdAt": {
- "type": "string",
- "format": "date-time",
- "title": "created time"
- },
- "updatedAt": {
- "type": "string",
- "format": "date-time",
- "title": "last updated time"
- }
- },
- "description": "Import task entity\n@exclude Next ID: 10."
- },
- "ImportTaskStatus": {
- "type": "string",
- "enum": [
- "IMPORT_TASK_STATUS_UNSPECIFIED",
- "IMPORT_TASK_STATUS_PENDING",
- "IMPORT_TASK_STATUS_PROCESSING",
- "IMPORT_TASK_STATUS_SUCCESS",
- "IMPORT_TASK_STATUS_FAILED"
- ],
- "default": "IMPORT_TASK_STATUS_UNSPECIFIED",
- "title": "Import task status"
- },
- "PhoneStatus": {
- "type": "object",
- "properties": {
- "id": {
- "type": "integer",
- "format": "int32",
- "title": "Id of phone entity"
- },
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "Id of platform this phone entity belong"
- },
- "phoneNumber": {
- "type": "string",
- "title": "phone number"
- },
- "banned": {
- "type": "boolean",
- "format": "boolean",
- "title": "This phone entity banned or not"
- },
- "createdAt": {
- "type": "string",
- "format": "date-time",
- "title": "Created time"
- },
- "updatedAt": {
- "type": "string",
- "format": "int64",
- "title": "Updated time"
- },
- "creatorId": {
- "type": "string",
- "title": "iam id of creator"
- }
- },
- "description": "@exclude Next ID: 8."
- },
- "UpdatePhoneStatusRequest": {
- "type": "object",
- "properties": {
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "platform id"
- },
- "phoneNumber": {
- "type": "string",
- "title": "phone number"
- },
- "banned": {
- "type": "boolean",
- "format": "boolean",
- "title": "phone banned or not"
- }
- },
- "title": "UpdateIdentityRequest update entity status info, if entity is not existed yet then create new one"
- }
- }
- }
+  "swagger": "2.0",
+  "info": {
+    "title": "fraud_detector/v1/service.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/import-tasks": {
+      "post": {
+        "summary": "Create import task",
+        "operationId": "CreateImportTask",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ImportTask"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateImportTaskRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BlackListService"
+        ]
+      }
+    },
+    "/api/v1/phone-status": {
+      "get": {
+        "summary": "Get phone status",
+        "operationId": "GetPhoneStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetPhoneStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "platformId",
+            "description": "platform id.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "phoneNumber",
+            "description": "phone number to get.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "BlackListService"
+        ]
+      },
+      "put": {
+        "summary": "Create/update phone status",
+        "operationId": "UpdatePhoneStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdatePhoneStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdatePhoneStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BlackListService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "runtimeError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateImportTaskRequest": {
+      "type": "object",
+      "properties": {
+        "fileUrl": {
+          "type": "string",
+          "title": "url to get excel file"
+        },
+        "platformId": {
+          "type": "integer",
+          "format": "int32",
+          "title": "platform id"
+        }
+      },
+      "title": "Create import task request"
+    },
+    "v1GetPhoneStatusResponse": {
+      "type": "object",
+      "properties": {
+        "phoneStatus": {
+          "$ref": "#/definitions/v1PhoneStatus",
+          "title": "phone status"
+        }
+      },
+      "title": "get phone status response"
+    },
+    "v1ImportTask": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32",
+          "title": "import task id"
+        },
+        "fileUrl": {
+          "type": "string",
+          "title": "import task file url"
+        },
+        "platformId": {
+          "type": "integer",
+          "format": "int32",
+          "title": "platform_id"
+        },
+        "status": {
+          "$ref": "#/definitions/v1ImportTaskStatus"
+        },
+        "note": {
+          "type": "string",
+          "title": "task note"
+        },
+        "elapsedTime": {
+          "type": "integer",
+          "format": "int32",
+          "title": "total executed time of task"
+        },
+        "creator": {
+          "type": "string",
+          "title": "email of creator user"
+        },
+        "updater": {
+          "type": "string",
+          "title": "email of updater user"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "created time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "last updated time"
+        }
+      },
+      "description": "Import task entity\n@exclude Next ID: 11."
+    },
+    "v1ImportTaskStatus": {
+      "type": "string",
+      "enum": [
+        "IMPORT_TASK_STATUS_UNSPECIFIED",
+        "IMPORT_TASK_STATUS_PENDING",
+        "IMPORT_TASK_STATUS_PROCESSING",
+        "IMPORT_TASK_STATUS_SUCCESS",
+        "IMPORT_TASK_STATUS_FAILED"
+      ],
+      "default": "IMPORT_TASK_STATUS_UNSPECIFIED",
+      "title": "Import task status"
+    },
+    "v1PhoneStatus": {
+      "type": "object",
+      "properties": {
+        "phoneStatusId": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Id of phone entity"
+        },
+        "platformId": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Id of platform this phone entity belong"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "title": "phone number"
+        },
+        "banned": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "This phone entity banned or not"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "Created time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "int64",
+          "title": "Updated time"
+        },
+        "creator": {
+          "type": "string",
+          "title": "email of creator"
+        },
+        "updater": {
+          "type": "string",
+          "title": "email of updater user"
+        }
+      },
+      "description": "@exclude Next ID: 8."
+    },
+    "v1UpdatePhoneStatusRequest": {
+      "type": "object",
+      "properties": {
+        "platformId": {
+          "type": "integer",
+          "format": "int32",
+          "title": "platform id"
+        },
+        "phoneNumber": {
+          "type": "string",
+          "title": "phone number"
+        },
+        "isBanned": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "phone banned or not"
+        }
+      },
+      "title": "UpdateIdentityRequest update entity status info, if entity is not existed yet then create new one"
+    },
+    "v1UpdatePhoneStatusResponse": {
+      "type": "object",
+      "properties": {
+        "phoneStatus": {
+          "$ref": "#/definitions/v1PhoneStatus",
+          "title": "phone status"
+        }
+      },
+      "title": "update phone status response"
+    }
+  }
+}
