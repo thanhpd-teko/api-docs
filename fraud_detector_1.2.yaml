@@ -64,8 +64,8 @@
  },
  "parameters": [
  {
- "name": "platformCode",
- "description": "platform code.",
+ "name": "platformId",
+ "description": "platform id.",
  "in": "query",
  "required": false,
  "type": "integer",
@@ -157,9 +157,10 @@
  "type": "string",
  "title": "url to get excel file"
  },
- "platformCode": {
- "type": "string",
- "title": "platform code"
+ "platformId": {
+ "type": "integer",
+ "format": "int32",
+ "title": "platform id"
  }
  },
  "title": "Create import task request"
@@ -264,9 +265,10 @@
  "UpdatePhoneStatusRequest": {
  "type": "object",
  "properties": {
- "platformCode": {
- "type": "string",
- "title": "platform code"
+ "platformId": {
+ "type": "integer",
+ "format": "int32",
+ "title": "platform id"
  },
  "phoneNumber": {
  "type": "string",
