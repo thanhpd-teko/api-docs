@@ -64,14 +64,6 @@
  },
  "parameters": [
  {
- "name": "platformId",
- "description": "platform id.",
- "in": "query",
- "required": false,
- "type": "integer",
- "format": "int32"
- },
- {
  "name": "phoneNumber",
  "description": "phone number to get.",
  "in": "query",
@@ -167,11 +159,6 @@
  "fileUrl": {
  "type": "string",
  "title": "url to get excel file"
- },
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "platform id"
  }
  },
  "title": "Create import task request"
@@ -250,11 +237,6 @@
  "PhoneStatus": {
  "type": "object",
  "properties": {
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "Id of platform this phone entity belong"
- },
  "phoneNumber": {
  "type": "string",
  "title": "phone number"
@@ -288,11 +270,6 @@
  "UpdatePhoneStatusRequest": {
  "type": "object",
  "properties": {
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "platform id"
- },
  "phoneNumber": {
  "type": "string",
  "title": "phone number"
@@ -317,4 +294,3 @@
  }
  }
  }
-
