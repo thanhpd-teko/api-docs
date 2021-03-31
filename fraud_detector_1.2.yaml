@@ -1,7 +1,7 @@
 {
  "swagger": "2.0",
  "info": {
- "title": "fraud_detector",
+ "title": "black_list",
  "version": "v1"
  },
  "consumes": [
@@ -195,11 +195,6 @@
  "type": "string",
  "title": "import task file url"
  },
- "platformId": {
- "type": "integer",
- "format": "int32",
- "title": "platform_id"
- },
  "status": {
  "$ref": "#/definitions/ImportTaskStatus",
  "title": "task status"
@@ -232,7 +227,7 @@
  "title": "last updated time"
  }
  },
- "description": "Import task entity\n@exclude Next ID: 11."
+ "description": "Import task entity\n@exclude Next ID: 10."
  },
  "PhoneStatus": {
  "type": "object",
@@ -265,7 +260,7 @@
  "title": "email of updater user"
  }
  },
- "description": "@exclude Next ID: 8."
+ "description": "Phone Status\n@exclude Next ID: 7."
  },
  "UpdatePhoneStatusRequest": {
  "type": "object",
