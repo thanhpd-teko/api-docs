@@ -11,6 +11,43 @@
  "application/json"
  ],
  "paths": {
+ "/api/v1/black-list-phone-url": {
+ "get": {
+ "summary": "Get downloadable file url to get all black list",
+ "operationId": "GetBlackListUrl",
+ "responses": {
+ "200": {
+ "description": "A successful response.",
+ "schema": {
+ "$ref": "#/definitions/GetBlackListUrlResponse"
+ }
+ },
+ "default": {
+ "description": "An unexpected error response",
+ "schema": {
+ "$ref": "#/definitions/runtimeError"
+ }
+ }
+ },
+ "parameters": [
+ {
+ "name": "type",
+ "description": "type of black list data to get.",
+ "in": "query",
+ "required": false,
+ "type": "string",
+ "enum": [
+ "TYPE_UNSPECIFIED",
+ "TYPE_PHONE"
+ ],
+ "default": "TYPE_UNSPECIFIED"
+ }
+ ],
+ "tags": [
+ "BlackListService"
+ ]
+ }
+ },
  "/api/v1/import-tasks": {
  "post": {
  "summary": "Create import task",
@@ -46,7 +83,7 @@
  },
  "/api/v1/phone-status": {
  "get": {
- "summary": "Get phone status",
+ "summary": "Get multiple phone status",
  "operationId": "GetPhoneStatus",
  "responses": {
  "200": {
@@ -68,7 +105,11 @@
  "description": "phone number to get.",
  "in": "query",
  "required": false,
+ "type": "array",
+ "items": {
  "type": "string"
+ },
+ "collectionFormat": "multi"
  }
  ],
  "tags": [
@@ -112,13 +153,14 @@
  "ImportTaskStatus": {
  "type": "string",
  "enum": [
- "IMPORT_TASK_STATUS_UNSPECIFIED",
- "IMPORT_TASK_STATUS_PENDING",
- "IMPORT_TASK_STATUS_PROCESSING",
- "IMPORT_TASK_STATUS_SUCCESS",
- "IMPORT_TASK_STATUS_FAILED"
+ "STATUS_UNSPECIFIED",
+ "STATUS_PENDING",
+ "STATUS_PROCESSING",
+ "STATUS_SUCCESS",
+ "STATUS_FAILED"
  ],
- "default": "IMPORT_TASK_STATUS_UNSPECIFIED"
+ "default": "STATUS_UNSPECIFIED",
+ "title": "import task status"
  },
  "protobufAny": {
  "type": "object",
@@ -173,11 +215,37 @@
  },
  "title": "create import task response"
  },
+ "GetBlackListUrlRequestType": {
+ "type": "string",
+ "enum": [
+ "TYPE_UNSPECIFIED",
+ "TYPE_PHONE"
+ ],
+ "default": "TYPE_UNSPECIFIED"
+ },
+ "GetBlackListUrlResponse": {
+ "type": "object",
+ "properties": {
+ "downloadUrl": {
+ "type": "string",
+ "title": "download url"
+ },
+ "createdAt": {
+ "type": "string",
+ "format": "date-time",
+ "title": "when this file is created"
+ }
+ },
+ "title": "get black list phone url response"
+ },
  "GetPhoneStatusResponse": {
  "type": "object",
  "properties": {
- "phoneStatus": {
- "$ref": "#/definitions/PhoneStatus",
+ "phoneStatues": {
+ "type": "array",
+ "items": {
+ "$ref": "#/definitions/PhoneStatus"
+ },
  "title": "phone status"
  }
  },
@@ -258,9 +326,23 @@
  "updaterEmail": {
  "type": "string",
  "title": "email of updater user"
+ },
+ "startBanTime": {
+ "type": "string",
+ "format": "date-time",
+ "title": "start time that this phone number will be banned"
+ },
+ "endBanTime": {
+ "type": "string",
+ "format": "date-time",
+ "title": "end time that this phone number will be unbanned"
+ },
+ "banReason": {
+ "type": "string",
+ "title": "ban reason"
  }
  },
- "description": "Phone Status\n@exclude Next ID: 7."
+ "description": "Phone Status\n@exclude Next ID: 10."
  },
  "UpdatePhoneStatusRequest": {
  "type": "object",
