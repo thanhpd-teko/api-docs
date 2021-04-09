@@ -81,6 +81,66 @@
  ]
  }
  },
+ "/api/v1/phone-statues": {
+ "get": {
+ "summary": "Get phone status pagination",
+ "operationId": "GetPhoneStatusPagination",
+ "responses": {
+ "200": {
+ "description": "A successful response.",
+ "schema": {
+ "$ref": "#/definitions/GetPhoneStatusPaginationResponse"
+ }
+ },
+ "default": {
+ "description": "An unexpected error response",
+ "schema": {
+ "$ref": "#/definitions/runtimeError"
+ }
+ }
+ },
+ "parameters": [
+ {
+ "name": "paging.page",
+ "description": "page.",
+ "in": "query",
+ "required": false,
+ "type": "integer",
+ "format": "int32"
+ },
+ {
+ "name": "paging.pageSize",
+ "description": "page size.",
+ "in": "query",
+ "required": false,
+ "type": "integer",
+ "format": "int32"
+ },
+ {
+ "name": "phoneNumbers",
+ "description": "phone_numbers currently we only support exact search.",
+ "in": "query",
+ "required": false,
+ "type": "array",
+ "items": {
+ "type": "string"
+ },
+ "collectionFormat": "multi"
+ },
+ {
+ "name": "sort.ascending",
+ "description": "ascending or descending.",
+ "in": "query",
+ "required": false,
+ "type": "boolean",
+ "format": "boolean"
+ }
+ ],
+ "tags": [
+ "BlackListService"
+ ]
+ }
+ },
  "/api/v1/phone-status": {
  "get": {
  "summary": "Get multiple phone status",
@@ -238,6 +298,40 @@
  },
  "title": "get black list phone url response"
  },
+ "GetPhoneStatusPaginationRequestSort": {
+ "type": "object",
+ "properties": {
+ "ascending": {
+ "type": "boolean",
+ "format": "boolean",
+ "title": "ascending or descending"
+ }
+ },
+ "title": "sort"
+ },
+ "GetPhoneStatusPaginationResponse": {
+ "type": "object",
+ "properties": {
+ "totalResult": {
+ "type": "integer",
+ "format": "int32",
+ "title": "total result"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int32",
+ "title": "total page"
+ },
+ "results": {
+ "type": "array",
+ "items": {
+ "$ref": "#/definitions/PhoneStatus"
+ },
+ "title": "results"
+ }
+ },
+ "title": "GetPhoneStatusPaginationResponse"
+ },
  "GetPhoneStatusResponse": {
  "type": "object",
  "properties": {
@@ -297,6 +391,22 @@
  },
  "description": "Import task entity\n@exclude Next ID: 10."
  },
+ "Paging": {
+ "type": "object",
+ "properties": {
+ "page": {
+ "type": "integer",
+ "format": "int32",
+ "title": "page"
+ },
+ "pageSize": {
+ "type": "integer",
+ "format": "int32",
+ "title": "page size"
+ }
+ },
+ "title": "Paging message"
+ },
  "PhoneStatus": {
  "type": "object",
  "properties": {
@@ -327,22 +437,12 @@
  "type": "string",
  "title": "email of updater user"
  },
- "startBanTime": {
- "type": "string",
- "format": "date-time",
- "title": "start time that this phone number will be banned"
- },
- "endBanTime": {
- "type": "string",
- "format": "date-time",
- "title": "end time that this phone number will be unbanned"
- },
  "banReason": {
  "type": "string",
  "title": "ban reason"
  }
  },
- "description": "Phone Status\n@exclude Next ID: 10."
+ "description": "Phone Status\n@exclude Next ID: 8."
  },
  "UpdatePhoneStatusRequest": {
  "type": "object",
@@ -371,4 +471,3 @@
  }
  }
  }
-
