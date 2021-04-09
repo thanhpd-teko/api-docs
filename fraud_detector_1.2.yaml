@@ -81,15 +81,94 @@
  ]
  }
  },
- "/api/v1/phone-statues": {
+ "/api/v1/import-templates": {
  "get": {
- "summary": "Get phone status pagination",
- "operationId": "GetPhoneStatusPagination",
+ "summary": "Get import excel template",
+ "operationId": "GetImportTemplate",
+ "responses": {
+ "200": {
+ "description": "A successful response.(streaming responses)",
+ "schema": {
+ "type": "object",
+ "properties": {
+ "result": {
+ "$ref": "#/definitions/DataChunk"
+ },
+ "error": {
+ "$ref": "#/definitions/runtimeStreamError"
+ }
+ },
+ "title": "Stream result of DataChunk"
+ }
+ },
+ "default": {
+ "description": "An unexpected error response",
+ "schema": {
+ "$ref": "#/definitions/runtimeError"
+ }
+ }
+ },
+ "parameters": [
+ {
+ "name": "type",
+ "description": "template type.",
+ "in": "query",
+ "required": false,
+ "type": "string",
+ "enum": [
+ "TYPE_UNSPECIFIED",
+ "TYPE_PHONE_NUMBER"
+ ],
+ "default": "TYPE_UNSPECIFIED"
+ }
+ ],
+ "tags": [
+ "BlackListService"
+ ]
+ }
+ },
+ "/api/v1/phone-status": {
+ "put": {
+ "summary": "Create/update phone status",
+ "operationId": "UpdatePhoneStatus",
  "responses": {
  "200": {
  "description": "A successful response.",
  "schema": {
- "$ref": "#/definitions/GetPhoneStatusPaginationResponse"
+ "$ref": "#/definitions/UpdatePhoneStatusResponse"
+ }
+ },
+ "default": {
+ "description": "An unexpected error response",
+ "schema": {
+ "$ref": "#/definitions/runtimeError"
+ }
+ }
+ },
+ "parameters": [
+ {
+ "name": "body",
+ "in": "body",
+ "required": true,
+ "schema": {
+ "$ref": "#/definitions/UpdatePhoneStatusRequest"
+ }
+ }
+ ],
+ "tags": [
+ "BlackListService"
+ ]
+ }
+ },
+ "/api/v1/phone-statuses": {
+ "get": {
+ "summary": "GetPhoneStatuses return phone status pagination with some filters",
+ "operationId": "GetPhoneStatuses",
+ "responses": {
+ "200": {
+ "description": "A successful response.",
+ "schema": {
+ "$ref": "#/definitions/GetPhoneStatusesResponse"
  }
  },
  "default": {
@@ -128,7 +207,21 @@
  "collectionFormat": "multi"
  },
  {
- "name": "sort.ascending",
+ "name": "sort.sortBy",
+ "description": "SortBy.",
+ "in": "query",
+ "required": false,
+ "type": "string",
+ "enum": [
+ "SORT_BY_UNSPECIFIED",
+ "SORT_BY_PHONE_NUMBER",
+ "SORT_BY_PHONE_CREATED_AT",
+ "SORT_BY_PHONE_UPDATED_AT"
+ ],
+ "default": "SORT_BY_UNSPECIFIED"
+ },
+ {
+ "name": "sort.isAscending",
  "description": "ascending or descending.",
  "in": "query",
  "required": false,
@@ -141,15 +234,15 @@
  ]
  }
  },
- "/api/v1/phone-status": {
+ "/api/v1/phone-statuses/check": {
  "get": {
- "summary": "Get multiple phone status",
- "operationId": "GetPhoneStatus",
+ "summary": "CheckPhoneStatuses: return list of phone number are banned or not\nThis api is for external service call to check whether a phone number is banned or not",
+ "operationId": "CheckPhoneStatuses",
  "responses": {
  "200": {
  "description": "A successful response.",
  "schema": {
- "$ref": "#/definitions/GetPhoneStatusResponse"
+ "$ref": "#/definitions/CheckPhoneStatusesResponse"
  }
  },
  "default": {
@@ -175,37 +268,6 @@
  "tags": [
  "BlackListService"
  ]
- },
- "put": {
- "summary": "Create/update phone status",
- "operationId": "UpdatePhoneStatus",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/UpdatePhoneStatusResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "body",
- "in": "body",
- "required": true,
- "schema": {
- "$ref": "#/definitions/UpdatePhoneStatusRequest"
- }
- }
- ],
- "tags": [
- "BlackListService"
- ]
  }
  }
  },
@@ -221,6 +283,17 @@
  ],
  "default": "STATUS_UNSPECIFIED",
  "title": "import task status"
+ },
+ "SortSortBy": {
+ "type": "string",
+ "enum": [
+ "SORT_BY_UNSPECIFIED",
+ "SORT_BY_PHONE_NUMBER",
+ "SORT_BY_PHONE_CREATED_AT",
+ "SORT_BY_PHONE_UPDATED_AT"
+ ],
+ "default": "SORT_BY_UNSPECIFIED",
+ "title": "sort by"
  },
  "protobufAny": {
  "type": "object",
@@ -255,6 +328,72 @@
  }
  }
  },
+ "runtimeStreamError": {
+ "type": "object",
+ "properties": {
+ "grpcCode": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "httpCode": {
+ "type": "integer",
+ "format": "int32"
+ },
+ "message": {
+ "type": "string"
+ },
+ "httpStatus": {
+ "type": "string"
+ },
+ "details": {
+ "type": "array",
+ "items": {
+ "$ref": "#/definitions/protobufAny"
+ }
+ }
+ }
+ },
+ "CheckPhoneStatusesResponse": {
+ "type": "object",
+ "properties": {
+ "phoneStatuses": {
+ "type": "array",
+ "items": {
+ "$ref": "#/definitions/PhoneStatus"
+ },
+ "title": "phone status"
+ }
+ },
+ "title": "get phone status response"
+ },
+ "CompletedPhoneStatus": {
+ "type": "object",
+ "properties": {
+ "phoneStatus": {
+ "$ref": "#/definitions/PhoneStatus",
+ "title": "PhoneStatus"
+ },
+ "createdAt": {
+ "type": "string",
+ "format": "date-time",
+ "title": "Created time"
+ },
+ "updatedAt": {
+ "type": "string",
+ "format": "date-time",
+ "title": "Updated time"
+ },
+ "creatorEmail": {
+ "type": "string",
+ "title": "email of creator"
+ },
+ "updaterEmail": {
+ "type": "string",
+ "title": "email of updater user"
+ }
+ },
+ "description": "Phone Status\n@exclude Next ID: 6."
+ },
  "CreateImportTaskRequest": {
  "type": "object",
  "properties": {
@@ -274,6 +413,16 @@
  }
  },
  "title": "create import task response"
+ },
+ "DataChunk": {
+ "type": "object",
+ "properties": {
+ "data": {
+ "type": "string",
+ "format": "byte"
+ }
+ },
+ "title": "Byte data"
  },
  "GetBlackListUrlRequestType": {
  "type": "string",
@@ -298,10 +447,22 @@
  },
  "title": "get black list phone url response"
  },
- "GetPhoneStatusPaginationRequestSort": {
+ "GetImportTemplateRequestType": {
+ "type": "string",
+ "enum": [
+ "TYPE_UNSPECIFIED",
+ "TYPE_PHONE_NUMBER"
+ ],
+ "default": "TYPE_UNSPECIFIED"
+ },
+ "GetPhoneStatusesRequestSort": {
  "type": "object",
  "properties": {
- "ascending": {
+ "sortBy": {
+ "$ref": "#/definitions/SortSortBy",
+ "title": "SortBy"
+ },
+ "isAscending": {
  "type": "boolean",
  "format": "boolean",
  "title": "ascending or descending"
@@ -309,7 +470,7 @@
  },
  "title": "sort"
  },
- "GetPhoneStatusPaginationResponse": {
+ "GetPhoneStatusesResponse": {
  "type": "object",
  "properties": {
  "totalResult": {
@@ -325,25 +486,12 @@
  "results": {
  "type": "array",
  "items": {
- "$ref": "#/definitions/PhoneStatus"
+ "$ref": "#/definitions/CompletedPhoneStatus"
  },
  "title": "results"
  }
  },
  "title": "GetPhoneStatusPaginationResponse"
- },
- "GetPhoneStatusResponse": {
- "type": "object",
- "properties": {
- "phoneStatues": {
- "type": "array",
- "items": {
- "$ref": "#/definitions/PhoneStatus"
- },
- "title": "phone status"
- }
- },
- "title": "get phone status response"
  },
  "ImportTask": {
  "type": "object",
@@ -419,30 +567,12 @@
  "format": "boolean",
  "title": "This phone entity banned or not"
  },
- "createdAt": {
- "type": "string",
- "format": "date-time",
- "title": "Created time"
- },
- "updatedAt": {
- "type": "string",
- "format": "date-time",
- "title": "Updated time"
- },
- "creatorEmail": {
- "type": "string",
- "title": "email of creator"
- },
- "updaterEmail": {
- "type": "string",
- "title": "email of updater user"
- },
  "banReason": {
  "type": "string",
  "title": "ban reason"
  }
  },
- "description": "Phone Status\n@exclude Next ID: 8."
+ "title": "PhoneStatus"
  },
  "UpdatePhoneStatusRequest": {
  "type": "object",
@@ -463,7 +593,7 @@
  "type": "object",
  "properties": {
  "phoneStatus": {
- "$ref": "#/definitions/PhoneStatus",
+ "$ref": "#/definitions/CompletedPhoneStatus",
  "title": "phone status"
  }
  },
