@@ -37,10 +37,10 @@
  "required": false,
  "type": "string",
  "enum": [
- "TYPE_UNSPECIFIED",
- "TYPE_PHONE"
+ "ENTITY_TYPE_UNSPECIFIED",
+ "ENTITY_TYPE_PHONE_NUMBER"
  ],
- "default": "TYPE_UNSPECIFIED"
+ "default": "ENTITY_TYPE_UNSPECIFIED"
  }
  ],
  "tags": [
@@ -102,6 +102,18 @@
  "required": false,
  "type": "boolean",
  "format": "boolean"
+ },
+ {
+ "name": "type",
+ "description": "type.",
+ "in": "query",
+ "required": false,
+ "type": "string",
+ "enum": [
+ "ENTITY_TYPE_UNSPECIFIED",
+ "ENTITY_TYPE_PHONE_NUMBER"
+ ],
+ "default": "ENTITY_TYPE_UNSPECIFIED"
  }
  ],
  "tags": [
@@ -174,7 +186,7 @@
  },
  "/api/v1/import-templates": {
  "get": {
- "summary": "Get import excel template",
+ "summary": "Get import template file.",
  "operationId": "GetImportTemplate",
  "responses": {
  "200": {
@@ -183,13 +195,13 @@
  "type": "object",
  "properties": {
  "result": {
- "$ref": "#/definitions/DataChunk"
+ "$ref": "#/definitions/BlacklistTemplateDataChunk"
  },
  "error": {
  "$ref": "#/definitions/runtimeStreamError"
  }
  },
- "title": "Stream result of DataChunk"
+ "title": "Stream result of BlacklistTemplateDataChunk"
  }
  },
  "default": {
@@ -207,10 +219,10 @@
  "required": false,
  "type": "string",
  "enum": [
- "TYPE_UNSPECIFIED",
- "TYPE_PHONE_NUMBER"
+ "ENTITY_TYPE_UNSPECIFIED",
+ "ENTITY_TYPE_PHONE_NUMBER"
  ],
- "default": "TYPE_UNSPECIFIED"
+ "default": "ENTITY_TYPE_UNSPECIFIED"
  }
  ],
  "tags": [
@@ -220,7 +232,7 @@
  },
  "/api/v1/phone-statuses": {
  "get": {
- "summary": "GetPhoneStatuses return phone status pagination with some filters",
+ "summary": "GetPhoneStatuses: return a list of phone statuses that meet specified filtering criteria.",
  "operationId": "GetPhoneStatuses",
  "responses": {
  "200": {
@@ -343,7 +355,7 @@
  },
  "parameters": [
  {
- "name": "phoneNumber",
+ "name": "phoneNumbers",
  "description": "phone number to get.",
  "in": "query",
  "required": false,
@@ -431,6 +443,16 @@
  }
  }
  },
+ "BlacklistTemplateDataChunk": {
+ "type": "object",
+ "properties": {
+ "excelTemplateData": {
+ "type": "string",
+ "format": "byte"
+ }
+ },
+ "title": "Byte data"
+ },
  "CheckPhoneStatusesResponse": {
  "type": "object",
  "properties": {
@@ -444,7 +466,7 @@
  },
  "title": "get phone status response"
  },
- "CompletedPhoneStatus": {
+ "CompletePhoneStatus": {
  "type": "object",
  "properties": {
  "phoneStatus": {
@@ -492,23 +514,14 @@
  },
  "title": "create import task response"
  },
- "DataChunk": {
- "type": "object",
- "properties": {
- "data": {
- "type": "string",
- "format": "byte"
- }
- },
- "title": "Byte data"
- },
- "GetBlackListUrlRequestType": {
+ "EntityType": {
  "type": "string",
  "enum": [
- "TYPE_UNSPECIFIED",
- "TYPE_PHONE"
+ "ENTITY_TYPE_UNSPECIFIED",
+ "ENTITY_TYPE_PHONE_NUMBER"
  ],
- "default": "TYPE_UNSPECIFIED"
+ "default": "ENTITY_TYPE_UNSPECIFIED",
+ "title": "entity type"
  },
  "GetBlackListUrlResponse": {
  "type": "object",
@@ -572,15 +585,6 @@
  },
  "title": "GetPhoneStatusPaginationResponse"
  },
- "GetImportTemplateRequestType": {
- "type": "string",
- "enum": [
- "TYPE_UNSPECIFIED",
- "TYPE_PHONE_NUMBER"
- ],
- "default": "TYPE_UNSPECIFIED",
- "title": "Import template type"
- },
  "GetPhoneStatusesRequestSort": {
  "type": "object",
  "properties": {
@@ -623,7 +627,7 @@
  "results": {
  "type": "array",
  "items": {
- "$ref": "#/definitions/CompletedPhoneStatus"
+ "$ref": "#/definitions/CompletePhoneStatus"
  },
  "title": "results"
  }
@@ -743,8 +747,11 @@
  "type": "object",
  "properties": {
  "phoneStatus": {
- "$ref": "#/definitions/CompletedPhoneStatus",
+ "$ref": "#/definitions/CompletePhoneStatus",
  "title": "phone status"
+ },
+ "bannedReason": {
+ "type": "string"
  }
  },
  "title": "update phone status response"
