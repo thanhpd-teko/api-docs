@@ -49,6 +49,65 @@
  }
  },
  "/api/v1/import-tasks": {
+ "get": {
+ "summary": "GetImportTasks",
+ "operationId": "GetImportTasks",
+ "responses": {
+ "200": {
+ "description": "A successful response.",
+ "schema": {
+ "$ref": "#/definitions/GetImportTasksResponse"
+ }
+ },
+ "default": {
+ "description": "An unexpected error response",
+ "schema": {
+ "$ref": "#/definitions/runtimeError"
+ }
+ }
+ },
+ "parameters": [
+ {
+ "name": "paging.page",
+ "description": "page.",
+ "in": "query",
+ "required": false,
+ "type": "integer",
+ "format": "int32"
+ },
+ {
+ "name": "paging.pageSize",
+ "description": "page size.",
+ "in": "query",
+ "required": false,
+ "type": "integer",
+ "format": "int32"
+ },
+ {
+ "name": "sort.sortBy",
+ "description": "SortBy.",
+ "in": "query",
+ "required": false,
+ "type": "string",
+ "enum": [
+ "SORT_BY_UNSPECIFIED",
+ "SORT_BY_PHONE_CREATED_AT"
+ ],
+ "default": "SORT_BY_UNSPECIFIED"
+ },
+ {
+ "name": "sort.isAscending",
+ "description": "ascending or descending.",
+ "in": "query",
+ "required": false,
+ "type": "boolean",
+ "format": "boolean"
+ }
+ ],
+ "tags": [
+ "BlackListService"
+ ]
+ },
  "post": {
  "summary": "Create import task",
  "operationId": "CreateImportTask",
@@ -74,6 +133,38 @@
  "schema": {
  "$ref": "#/definitions/CreateImportTaskRequest"
  }
+ }
+ ],
+ "tags": [
+ "BlackListService"
+ ]
+ }
+ },
+ "/api/v1/import-tasks/{importTaskId}/retry": {
+ "put": {
+ "summary": "Retry import task",
+ "operationId": "RetryImportTask",
+ "responses": {
+ "200": {
+ "description": "A successful response.",
+ "schema": {
+ "$ref": "#/definitions/RetryImportTaskResponse"
+ }
+ },
+ "default": {
+ "description": "An unexpected error response",
+ "schema": {
+ "$ref": "#/definitions/runtimeError"
+ }
+ }
+ },
+ "parameters": [
+ {
+ "name": "importTaskId",
+ "in": "path",
+ "required": true,
+ "type": "integer",
+ "format": "int32"
  }
  ],
  "tags": [
@@ -120,39 +211,6 @@
  "TYPE_PHONE_NUMBER"
  ],
  "default": "TYPE_UNSPECIFIED"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- },
- "/api/v1/phone-status": {
- "put": {
- "summary": "Create/update phone status",
- "operationId": "UpdatePhoneStatus",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/UpdatePhoneStatusResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "body",
- "in": "body",
- "required": true,
- "schema": {
- "$ref": "#/definitions/UpdatePhoneStatusRequest"
- }
  }
  ],
  "tags": [
@@ -232,6 +290,37 @@
  "tags": [
  "BlackListService"
  ]
+ },
+ "put": {
+ "summary": "Create/update phone status",
+ "operationId": "UpdatePhoneStatus",
+ "responses": {
+ "200": {
+ "description": "A successful response.",
+ "schema": {
+ "$ref": "#/definitions/UpdatePhoneStatusResponse"
+ }
+ },
+ "default": {
+ "description": "An unexpected error response",
+ "schema": {
+ "$ref": "#/definitions/runtimeError"
+ }
+ }
+ },
+ "parameters": [
+ {
+ "name": "body",
+ "in": "body",
+ "required": true,
+ "schema": {
+ "$ref": "#/definitions/UpdatePhoneStatusRequest"
+ }
+ }
+ ],
+ "tags": [
+ "BlackListService"
+ ]
  }
  },
  "/api/v1/phone-statuses/check": {
@@ -283,17 +372,6 @@
  ],
  "default": "STATUS_UNSPECIFIED",
  "title": "import task status"
- },
- "SortSortBy": {
- "type": "string",
- "enum": [
- "SORT_BY_UNSPECIFIED",
- "SORT_BY_PHONE_NUMBER",
- "SORT_BY_PHONE_CREATED_AT",
- "SORT_BY_PHONE_UPDATED_AT"
- ],
- "default": "SORT_BY_UNSPECIFIED",
- "title": "sort by"
  },
  "protobufAny": {
  "type": "object",
@@ -447,19 +525,11 @@
  },
  "title": "get black list phone url response"
  },
- "GetImportTemplateRequestType": {
- "type": "string",
- "enum": [
- "TYPE_UNSPECIFIED",
- "TYPE_PHONE_NUMBER"
- ],
- "default": "TYPE_UNSPECIFIED"
- },
- "GetPhoneStatusesRequestSort": {
+ "GetImportTasksRequestSort": {
  "type": "object",
  "properties": {
  "sortBy": {
- "$ref": "#/definitions/SortSortBy",
+ "$ref": "#/definitions/GetImportTasksRequestSortSortBy",
  "title": "SortBy"
  },
  "isAscending": {
@@ -469,6 +539,73 @@
  }
  },
  "title": "sort"
+ },
+ "GetImportTasksRequestSortSortBy": {
+ "type": "string",
+ "enum": [
+ "SORT_BY_UNSPECIFIED",
+ "SORT_BY_PHONE_CREATED_AT"
+ ],
+ "default": "SORT_BY_UNSPECIFIED",
+ "title": "sort by"
+ },
+ "GetImportTasksResponse": {
+ "type": "object",
+ "properties": {
+ "totalResult": {
+ "type": "integer",
+ "format": "int32",
+ "title": "total result"
+ },
+ "totalPage": {
+ "type": "integer",
+ "format": "int32",
+ "title": "total page"
+ },
+ "results": {
+ "type": "array",
+ "items": {
+ "$ref": "#/definitions/ImportTask"
+ },
+ "title": "results"
+ }
+ },
+ "title": "GetPhoneStatusPaginationResponse"
+ },
+ "GetImportTemplateRequestType": {
+ "type": "string",
+ "enum": [
+ "TYPE_UNSPECIFIED",
+ "TYPE_PHONE_NUMBER"
+ ],
+ "default": "TYPE_UNSPECIFIED",
+ "title": "Import template type"
+ },
+ "GetPhoneStatusesRequestSort": {
+ "type": "object",
+ "properties": {
+ "sortBy": {
+ "$ref": "#/definitions/GetPhoneStatusesRequestSortSortBy",
+ "title": "SortBy"
+ },
+ "isAscending": {
+ "type": "boolean",
+ "format": "boolean",
+ "title": "ascending or descending"
+ }
+ },
+ "title": "sort"
+ },
+ "GetPhoneStatusesRequestSortSortBy": {
+ "type": "string",
+ "enum": [
+ "SORT_BY_UNSPECIFIED",
+ "SORT_BY_PHONE_NUMBER",
+ "SORT_BY_PHONE_CREATED_AT",
+ "SORT_BY_PHONE_UPDATED_AT"
+ ],
+ "default": "SORT_BY_UNSPECIFIED",
+ "title": "sort by"
  },
  "GetPhoneStatusesResponse": {
  "type": "object",
@@ -535,9 +672,13 @@
  "type": "string",
  "format": "date-time",
  "title": "last updated time"
+ },
+ "resultFileUrl": {
+ "type": "string",
+ "title": "result file url"
  }
  },
- "description": "Import task entity\n@exclude Next ID: 10."
+ "description": "Import task entity\n@exclude Next ID: 11."
  },
  "Paging": {
  "type": "object",
@@ -573,6 +714,15 @@
  }
  },
  "title": "PhoneStatus"
+ },
+ "RetryImportTaskResponse": {
+ "type": "object",
+ "properties": {
+ "importTask": {
+ "$ref": "#/definitions/ImportTask"
+ }
+ },
+ "title": "RetryImportTaskResponse"
  },
  "UpdatePhoneStatusRequest": {
  "type": "object",
