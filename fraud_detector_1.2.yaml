@@ -173,12 +173,13 @@ paths:
             $ref: '#/definitions/runtimeError'
       parameters:
         - name: page
-          description: pagination.
+          description: page (default 1).
           in: query
           required: false
           type: integer
           format: int32
         - name: pageSize
+          description: page size (default 10).
           in: query
           required: false
           type: integer
@@ -419,7 +420,7 @@ definitions:
         type: integer
         format: int32
         title: total page
-      results:
+      phoneStatuses:
         type: array
         items:
           $ref: '#/definitions/CompletePhoneStatus'
@@ -516,6 +517,4 @@ definitions:
       phoneStatus:
         $ref: '#/definitions/CompletePhoneStatus'
         title: phone status
-      bannedReason:
-        type: string
     title: update phone status response
