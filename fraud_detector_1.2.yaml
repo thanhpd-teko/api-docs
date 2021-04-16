@@ -184,7 +184,7 @@ paths:
           type: integer
           format: int32
         - name: phoneNumbers
-          description: Exact phone numbers to filter for.
+          description: 'Exact phone numbers to filter for (max 100 items, min 1 item).'
           in: query
           required: false
           type: array
@@ -192,12 +192,12 @@ paths:
             type: string
           collectionFormat: multi
         - name: sortBy
-          description: SortBy.
+          description: 'SortBy (createdAt,updatedAt,phoneNumber) default: phoneNumber.'
           in: query
           required: false
           type: string
         - name: isAscending
-          description: ascending or descending.
+          description: 'ascending or descending, default: true.'
           in: query
           required: false
           type: boolean
