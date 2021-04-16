@@ -1,760 +1,521 @@
-{
- "swagger": "2.0",
- "info": {
- "title": "black_list",
- "version": "v1"
- },
- "consumes": [
- "application/json"
- ],
- "produces": [
- "application/json"
- ],
- "paths": {
- "/api/v1/black-list-url": {
- "get": {
- "summary": "Get downloadable file url to get all black list",
- "operationId": "GetBlackListUrl",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/GetBlackListUrlResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "type",
- "description": "type of black list data to get.",
- "in": "query",
- "required": false,
- "type": "string",
- "enum": [
- "ENTITY_TYPE_UNSPECIFIED",
- "ENTITY_TYPE_PHONE_NUMBER"
- ],
- "default": "ENTITY_TYPE_UNSPECIFIED"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- },
- "/api/v1/import-tasks": {
- "get": {
- "summary": "GetImportTasks",
- "operationId": "GetImportTasks",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/GetImportTasksResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "paging.page",
- "description": "page.",
- "in": "query",
- "required": false,
- "type": "integer",
- "format": "int32"
- },
- {
- "name": "paging.pageSize",
- "description": "page size.",
- "in": "query",
- "required": false,
- "type": "integer",
- "format": "int32"
- },
- {
- "name": "sort.sortBy",
- "description": "SortBy.",
- "in": "query",
- "required": false,
- "type": "string",
- "enum": [
- "SORT_BY_UNSPECIFIED",
- "SORT_BY_PHONE_CREATED_AT"
- ],
- "default": "SORT_BY_UNSPECIFIED"
- },
- {
- "name": "sort.isAscending",
- "description": "ascending or descending.",
- "in": "query",
- "required": false,
- "type": "boolean",
- "format": "boolean"
- },
- {
- "name": "type",
- "description": "type.",
- "in": "query",
- "required": false,
- "type": "string",
- "enum": [
- "ENTITY_TYPE_UNSPECIFIED",
- "ENTITY_TYPE_PHONE_NUMBER"
- ],
- "default": "ENTITY_TYPE_UNSPECIFIED"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- },
- "post": {
- "summary": "Create import task",
- "operationId": "CreateImportTask",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/CreateImportTaskResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "body",
- "in": "body",
- "required": true,
- "schema": {
- "$ref": "#/definitions/CreateImportTaskRequest"
- }
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- },
- "/api/v1/import-tasks/{importTaskId}/retry": {
- "put": {
- "summary": "Retry import task",
- "operationId": "RetryImportTask",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/RetryImportTaskResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "importTaskId",
- "in": "path",
- "required": true,
- "type": "integer",
- "format": "int32"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- },
- "/api/v1/import-templates": {
- "get": {
- "summary": "Get import template file.",
- "operationId": "GetImportTemplate",
- "responses": {
- "200": {
- "description": "A successful response.(streaming responses)",
- "schema": {
- "type": "object",
- "properties": {
- "result": {
- "$ref": "#/definitions/BlacklistTemplateDataChunk"
- },
- "error": {
- "$ref": "#/definitions/runtimeStreamError"
- }
- },
- "title": "Stream result of BlacklistTemplateDataChunk"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "type",
- "description": "template type.",
- "in": "query",
- "required": false,
- "type": "string",
- "enum": [
- "ENTITY_TYPE_UNSPECIFIED",
- "ENTITY_TYPE_PHONE_NUMBER"
- ],
- "default": "ENTITY_TYPE_UNSPECIFIED"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- },
- "/api/v1/phone-statuses": {
- "get": {
- "summary": "GetPhoneStatuses: return a list of phone statuses that meet specified filtering criteria.",
- "operationId": "GetPhoneStatuses",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/GetPhoneStatusesResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "paging.page",
- "description": "page.",
- "in": "query",
- "required": false,
- "type": "integer",
- "format": "int32"
- },
- {
- "name": "paging.pageSize",
- "description": "page size.",
- "in": "query",
- "required": false,
- "type": "integer",
- "format": "int32"
- },
- {
- "name": "phoneNumbers",
- "description": "phone_numbers currently we only support exact search.",
- "in": "query",
- "required": false,
- "type": "array",
- "items": {
- "type": "string"
- },
- "collectionFormat": "multi"
- },
- {
- "name": "sort.sortBy",
- "description": "SortBy.",
- "in": "query",
- "required": false,
- "type": "string",
- "enum": [
- "SORT_BY_UNSPECIFIED",
- "SORT_BY_PHONE_NUMBER",
- "SORT_BY_PHONE_CREATED_AT",
- "SORT_BY_PHONE_UPDATED_AT"
- ],
- "default": "SORT_BY_UNSPECIFIED"
- },
- {
- "name": "sort.isAscending",
- "description": "ascending or descending.",
- "in": "query",
- "required": false,
- "type": "boolean",
- "format": "boolean"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- },
- "put": {
- "summary": "Create/update phone status",
- "operationId": "UpdatePhoneStatus",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/UpdatePhoneStatusResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "body",
- "in": "body",
- "required": true,
- "schema": {
- "$ref": "#/definitions/UpdatePhoneStatusRequest"
- }
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- },
- "/api/v1/phone-statuses/check": {
- "get": {
- "summary": "CheckPhoneStatuses: return list of phone number are banned or not\nThis api is for external service call to check whether a phone number is banned or not",
- "operationId": "CheckPhoneStatuses",
- "responses": {
- "200": {
- "description": "A successful response.",
- "schema": {
- "$ref": "#/definitions/CheckPhoneStatusesResponse"
- }
- },
- "default": {
- "description": "An unexpected error response",
- "schema": {
- "$ref": "#/definitions/runtimeError"
- }
- }
- },
- "parameters": [
- {
- "name": "phoneNumbers",
- "description": "phone number to get.",
- "in": "query",
- "required": false,
- "type": "array",
- "items": {
- "type": "string"
- },
- "collectionFormat": "multi"
- }
- ],
- "tags": [
- "BlackListService"
- ]
- }
- }
- },
- "definitions": {
- "ImportTaskStatus": {
- "type": "string",
- "enum": [
- "STATUS_UNSPECIFIED",
- "STATUS_PENDING",
- "STATUS_PROCESSING",
- "STATUS_SUCCESS",
- "STATUS_FAILED"
- ],
- "default": "STATUS_UNSPECIFIED",
- "title": "import task status"
- },
- "protobufAny": {
- "type": "object",
- "properties": {
- "typeUrl": {
- "type": "string"
- },
- "value": {
- "type": "string",
- "format": "byte"
- }
- }
- },
- "runtimeError": {
- "type": "object",
- "properties": {
- "error": {
- "type": "string"
- },
- "code": {
- "type": "integer",
- "format": "int32"
- },
- "message": {
- "type": "string"
- },
- "details": {
- "type": "array",
- "items": {
- "$ref": "#/definitions/protobufAny"
- }
- }
- }
- },
- "runtimeStreamError": {
- "type": "object",
- "properties": {
- "grpcCode": {
- "type": "integer",
- "format": "int32"
- },
- "httpCode": {
- "type": "integer",
- "format": "int32"
- },
- "message": {
- "type": "string"
- },
- "httpStatus": {
- "type": "string"
- },
- "details": {
- "type": "array",
- "items": {
- "$ref": "#/definitions/protobufAny"
- }
- }
- }
- },
- "BlacklistTemplateDataChunk": {
- "type": "object",
- "properties": {
- "excelTemplateData": {
- "type": "string",
- "format": "byte"
- }
- },
- "title": "Byte data"
- },
- "CheckPhoneStatusesResponse": {
- "type": "object",
- "properties": {
- "phoneStatuses": {
- "type": "array",
- "items": {
- "$ref": "#/definitions/PhoneStatus"
- },
- "title": "phone status"
- }
- },
- "title": "get phone status response"
- },
- "CompletePhoneStatus": {
- "type": "object",
- "properties": {
- "phoneStatus": {
- "$ref": "#/definitions/PhoneStatus",
- "title": "PhoneStatus"
- },
- "createdAt": {
- "type": "string",
- "format": "date-time",
- "title": "Created time"
- },
- "updatedAt": {
- "type": "string",
- "format": "date-time",
- "title": "Updated time"
- },
- "creatorEmail": {
- "type": "string",
- "title": "email of creator"
- },
- "updaterEmail": {
- "type": "string",
- "title": "email of updater user"
- }
- },
- "description": "Phone Status\n@exclude Next ID: 6."
- },
- "CreateImportTaskRequest": {
- "type": "object",
- "properties": {
- "fileUrl": {
- "type": "string",
- "title": "url to get excel file"
- }
- },
- "title": "Create import task request"
- },
- "CreateImportTaskResponse": {
- "type": "object",
- "properties": {
- "importTask": {
- "$ref": "#/definitions/ImportTask",
- "title": "created import task"
- }
- },
- "title": "create import task response"
- },
- "EntityType": {
- "type": "string",
- "enum": [
- "ENTITY_TYPE_UNSPECIFIED",
- "ENTITY_TYPE_PHONE_NUMBER"
- ],
- "default": "ENTITY_TYPE_UNSPECIFIED",
- "title": "entity type"
- },
- "GetBlackListUrlResponse": {
- "type": "object",
- "properties": {
- "downloadUrl": {
- "type": "string",
- "title": "download url"
- },
- "createdAt": {
- "type": "string",
- "format": "date-time",
- "title": "when this file is created"
- }
- },
- "title": "get black list phone url response"
- },
- "GetImportTasksRequestSort": {
- "type": "object",
- "properties": {
- "sortBy": {
- "$ref": "#/definitions/GetImportTasksRequestSortSortBy",
- "title": "SortBy"
- },
- "isAscending": {
- "type": "boolean",
- "format": "boolean",
- "title": "ascending or descending"
- }
- },
- "title": "sort"
- },
- "GetImportTasksRequestSortSortBy": {
- "type": "string",
- "enum": [
- "SORT_BY_UNSPECIFIED",
- "SORT_BY_PHONE_CREATED_AT"
- ],
- "default": "SORT_BY_UNSPECIFIED",
- "title": "sort by"
- },
- "GetImportTasksResponse": {
- "type": "object",
- "properties": {
- "totalResult": {
- "type": "integer",
- "format": "int32",
- "title": "total result"
- },
- "totalPage": {
- "type": "integer",
- "format": "int32",
- "title": "total page"
- },
- "results": {
- "type": "array",
- "items": {
- "$ref": "#/definitions/ImportTask"
- },
- "title": "results"
- }
- },
- "title": "GetPhoneStatusPaginationResponse"
- },
- "GetPhoneStatusesRequestSort": {
- "type": "object",
- "properties": {
- "sortBy": {
- "$ref": "#/definitions/GetPhoneStatusesRequestSortSortBy",
- "title": "SortBy"
- },
- "isAscending": {
- "type": "boolean",
- "format": "boolean",
- "title": "ascending or descending"
- }
- },
- "title": "sort"
- },
- "GetPhoneStatusesRequestSortSortBy": {
- "type": "string",
- "enum": [
- "SORT_BY_UNSPECIFIED",
- "SORT_BY_PHONE_NUMBER",
- "SORT_BY_PHONE_CREATED_AT",
- "SORT_BY_PHONE_UPDATED_AT"
- ],
- "default": "SORT_BY_UNSPECIFIED",
- "title": "sort by"
- },
- "GetPhoneStatusesResponse": {
- "type": "object",
- "properties": {
- "totalResult": {
- "type": "integer",
- "format": "int32",
- "title": "total result"
- },
- "totalPage": {
- "type": "integer",
- "format": "int32",
- "title": "total page"
- },
- "results": {
- "type": "array",
- "items": {
- "$ref": "#/definitions/CompletePhoneStatus"
- },
- "title": "results"
- }
- },
- "title": "GetPhoneStatusPaginationResponse"
- },
- "ImportTask": {
- "type": "object",
- "properties": {
- "id": {
- "type": "integer",
- "format": "int32",
- "title": "import task id"
- },
- "fileUrl": {
- "type": "string",
- "title": "import task file url"
- },
- "status": {
- "$ref": "#/definitions/ImportTaskStatus",
- "title": "task status"
- },
- "note": {
- "type": "string",
- "title": "task note"
- },
- "elapsedTime": {
- "type": "integer",
- "format": "int32",
- "title": "total executed time of task"
- },
- "creatorEmail": {
- "type": "string",
- "title": "email of creator user"
- },
- "updaterEmail": {
- "type": "string",
- "title": "email of updater user"
- },
- "createdAt": {
- "type": "string",
- "format": "date-time",
- "title": "created time"
- },
- "updatedAt": {
- "type": "string",
- "format": "date-time",
- "title": "last updated time"
- },
- "resultFileUrl": {
- "type": "string",
- "title": "result file url"
- }
- },
- "description": "Import task entity\n@exclude Next ID: 11."
- },
- "Paging": {
- "type": "object",
- "properties": {
- "page": {
- "type": "integer",
- "format": "int32",
- "title": "page"
- },
- "pageSize": {
- "type": "integer",
- "format": "int32",
- "title": "page size"
- }
- },
- "title": "Paging message"
- },
- "PhoneStatus": {
- "type": "object",
- "properties": {
- "phoneNumber": {
- "type": "string",
- "title": "phone number"
- },
- "isBanned": {
- "type": "boolean",
- "format": "boolean",
- "title": "This phone entity banned or not"
- },
- "banReason": {
- "type": "string",
- "title": "ban reason"
- }
- },
- "title": "PhoneStatus"
- },
- "RetryImportTaskResponse": {
- "type": "object",
- "properties": {
- "importTask": {
- "$ref": "#/definitions/ImportTask"
- }
- },
- "title": "RetryImportTaskResponse"
- },
- "UpdatePhoneStatusRequest": {
- "type": "object",
- "properties": {
- "phoneNumber": {
- "type": "string",
- "title": "phone number"
- },
- "isBanned": {
- "type": "boolean",
- "format": "boolean",
- "title": "phone banned or not"
- }
- },
- "title": "UpdateIdentityRequest update entity status info, if entity is not existed yet then create new one"
- },
- "UpdatePhoneStatusResponse": {
- "type": "object",
- "properties": {
- "phoneStatus": {
- "$ref": "#/definitions/CompletePhoneStatus",
- "title": "phone status"
- },
- "bannedReason": {
- "type": "string"
- }
- },
- "title": "update phone status response"
- }
- }
- }
+swagger: '2.0'
+info:
+  title: black_list
+  version: v1
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/v1/black-list-url:
+    get:
+      summary: Get downloadable file url to get all black list
+      operationId: GetBlackListUrl
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/GetBlackListUrlResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: type
+          description: type of black list data to get.
+          in: query
+          required: false
+          type: string
+          enum:
+            - ENTITY_TYPE_UNSPECIFIED
+            - ENTITY_TYPE_PHONE_NUMBER
+          default: ENTITY_TYPE_UNSPECIFIED
+      tags:
+        - BlackListService
+  /api/v1/import-tasks:
+    get:
+      summary: GetImportTasks
+      operationId: GetImportTasks
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/GetImportTasksResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: paging.page
+          description: page.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: paging.pageSize
+          description: page size.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: sort.sortBy
+          description: SortBy.
+          in: query
+          required: false
+          type: string
+          enum:
+            - SORT_BY_UNSPECIFIED
+            - SORT_BY_PHONE_CREATED_AT
+          default: SORT_BY_UNSPECIFIED
+        - name: sort.isAscending
+          description: ascending or descending.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+        - name: type
+          description: type.
+          in: query
+          required: false
+          type: string
+          enum:
+            - ENTITY_TYPE_UNSPECIFIED
+            - ENTITY_TYPE_PHONE_NUMBER
+          default: ENTITY_TYPE_UNSPECIFIED
+      tags:
+        - BlackListService
+    post:
+      summary: Create import task
+      operationId: CreateImportTask
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/CreateImportTaskResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateImportTaskRequest'
+      tags:
+        - BlackListService
+  '/api/v1/import-tasks/{importTaskId}/retry':
+    put:
+      summary: Retry import task
+      operationId: RetryImportTask
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/RetryImportTaskResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: importTaskId
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - BlackListService
+  /api/v1/import-templates:
+    get:
+      summary: Get import template file.
+      operationId: GetImportTemplate
+      responses:
+        '200':
+          description: A successful response.(streaming responses)
+          schema:
+            type: object
+            properties:
+              result:
+                $ref: '#/definitions/BlacklistTemplateDataChunk'
+              error:
+                $ref: '#/definitions/runtimeStreamError'
+            title: Stream result of BlacklistTemplateDataChunk
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: type
+          description: template type.
+          in: query
+          required: false
+          type: string
+          enum:
+            - ENTITY_TYPE_UNSPECIFIED
+            - ENTITY_TYPE_PHONE_NUMBER
+          default: ENTITY_TYPE_UNSPECIFIED
+      tags:
+        - BlackListService
+  /api/v1/phone-statuses:
+    get:
+      summary: >-
+        GetPhoneStatuses: return a list of phone statuses that meet specified
+        filtering criteria.
+      operationId: GetPhoneStatuses
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/GetPhoneStatusesResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: page
+          description: pagination.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: phoneNumbers
+          description: Exact phone numbers to filter for.
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+        - name: sortBy
+          description: SortBy.
+          in: query
+          required: false
+          type: string
+        - name: isAscending
+          description: ascending or descending.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - BlackListService
+    put:
+      summary: Create/update phone status
+      operationId: UpdatePhoneStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/UpdatePhoneStatusResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdatePhoneStatusRequest'
+      tags:
+        - BlackListService
+  /api/v1/phone-statuses/check:
+    get:
+      summary: >-
+        CheckPhoneStatuses: return list of phone number are banned or not
+
+        This api is for external service call to check whether a phone number is
+        banned or not
+      operationId: CheckPhoneStatuses
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/CheckPhoneStatusesResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: phoneNumbers
+          description: phone number to get.
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+          collectionFormat: multi
+      tags:
+        - BlackListService
+definitions:
+  ImportTaskStatus:
+    type: string
+    enum:
+      - STATUS_UNSPECIFIED
+      - STATUS_PENDING
+      - STATUS_PROCESSING
+      - STATUS_SUCCESS
+      - STATUS_FAILED
+    default: STATUS_UNSPECIFIED
+    title: import task status
+  SortSortBy:
+    type: string
+    enum:
+      - SORT_BY_UNSPECIFIED
+      - SORT_BY_PHONE_CREATED_AT
+    default: SORT_BY_UNSPECIFIED
+    title: sort by
+  protobufAny:
+    type: object
+    properties:
+      typeUrl:
+        type: string
+      value:
+        type: string
+        format: byte
+  runtimeError:
+    type: object
+    properties:
+      error:
+        type: string
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/protobufAny'
+  runtimeStreamError:
+    type: object
+    properties:
+      grpcCode:
+        type: integer
+        format: int32
+      httpCode:
+        type: integer
+        format: int32
+      message:
+        type: string
+      httpStatus:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/protobufAny'
+  BlacklistTemplateDataChunk:
+    type: object
+    properties:
+      excelTemplateData:
+        type: string
+        format: byte
+    title: Byte data
+  CheckPhoneStatusesResponse:
+    type: object
+    properties:
+      phoneStatuses:
+        type: array
+        items:
+          $ref: '#/definitions/PhoneStatus'
+        title: phone status
+    title: get phone status response
+  CompletePhoneStatus:
+    type: object
+    properties:
+      phoneStatus:
+        $ref: '#/definitions/PhoneStatus'
+        title: PhoneStatus
+      createdAt:
+        type: string
+        format: date-time
+        title: Created time
+      updatedAt:
+        type: string
+        format: date-time
+        title: Updated time
+      creatorEmail:
+        type: string
+        title: email of creator
+      updaterEmail:
+        type: string
+        title: email of updater user
+    description: |-
+      Phone Status
+      @exclude Next ID: 6.
+  CreateImportTaskRequest:
+    type: object
+    properties:
+      fileUrl:
+        type: string
+        title: url to get excel file
+    title: Create import task request
+  CreateImportTaskResponse:
+    type: object
+    properties:
+      importTask:
+        $ref: '#/definitions/ImportTask'
+        title: created import task
+    title: create import task response
+  EntityType:
+    type: string
+    enum:
+      - ENTITY_TYPE_UNSPECIFIED
+      - ENTITY_TYPE_PHONE_NUMBER
+    default: ENTITY_TYPE_UNSPECIFIED
+    title: entity type
+  GetBlackListUrlResponse:
+    type: object
+    properties:
+      downloadUrl:
+        type: string
+        title: download url
+      createdAt:
+        type: string
+        format: date-time
+        title: when this file is created
+    title: get black list phone url response
+  GetImportTasksRequestSort:
+    type: object
+    properties:
+      sortBy:
+        $ref: '#/definitions/SortSortBy'
+        title: SortBy
+      isAscending:
+        type: boolean
+        format: boolean
+        title: ascending or descending
+    title: sort
+  GetImportTasksResponse:
+    type: object
+    properties:
+      totalResult:
+        type: integer
+        format: int32
+        title: total result
+      totalPage:
+        type: integer
+        format: int32
+        title: total page
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/ImportTask'
+        title: results
+    title: GetPhoneStatusPaginationResponse
+  GetPhoneStatusesResponse:
+    type: object
+    properties:
+      totalResult:
+        type: integer
+        format: int32
+        title: total result
+      totalPage:
+        type: integer
+        format: int32
+        title: total page
+      results:
+        type: array
+        items:
+          $ref: '#/definitions/CompletePhoneStatus'
+        title: results
+    title: GetPhoneStatusPaginationResponse
+  ImportTask:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int32
+        title: import task id
+      fileUrl:
+        type: string
+        title: import task file url
+      status:
+        $ref: '#/definitions/ImportTaskStatus'
+        title: task status
+      note:
+        type: string
+        title: task note
+      elapsedTime:
+        type: integer
+        format: int32
+        title: total executed time of task
+      creatorEmail:
+        type: string
+        title: email of creator user
+      updaterEmail:
+        type: string
+        title: email of updater user
+      createdAt:
+        type: string
+        format: date-time
+        title: created time
+      updatedAt:
+        type: string
+        format: date-time
+        title: last updated time
+      resultFileUrl:
+        type: string
+        title: result file url
+    description: |-
+      Import task entity
+      @exclude Next ID: 11.
+  Paging:
+    type: object
+    properties:
+      page:
+        type: integer
+        format: int32
+        title: page
+      pageSize:
+        type: integer
+        format: int32
+        title: page size
+    title: Paging message
+  PhoneStatus:
+    type: object
+    properties:
+      phoneNumber:
+        type: string
+        title: phone number
+      isBanned:
+        type: boolean
+        format: boolean
+        title: This phone entity banned or not
+      banReason:
+        type: string
+        title: ban reason
+    title: PhoneStatus
+  RetryImportTaskResponse:
+    type: object
+    properties:
+      importTask:
+        $ref: '#/definitions/ImportTask'
+    title: RetryImportTaskResponse
+  UpdatePhoneStatusRequest:
+    type: object
+    properties:
+      phoneNumber:
+        type: string
+        title: phone number
+      isBanned:
+        type: boolean
+        format: boolean
+        title: phone banned or not
+    title: >-
+      UpdateIdentityRequest update entity status info, if entity is not existed
+      yet then create new one
+  UpdatePhoneStatusResponse:
+    type: object
+    properties:
+      phoneStatus:
+        $ref: '#/definitions/CompletePhoneStatus'
+        title: phone status
+      bannedReason:
+        type: string
+    title: update phone status response
