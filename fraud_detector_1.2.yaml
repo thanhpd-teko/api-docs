@@ -34,7 +34,7 @@ paths:
         - BlackListService
   /api/v1/import-tasks:
     get:
-      summary: GetImportTasks
+      summary: GetImportTasks - Default sort by id DESC
       operationId: GetImportTasks
       responses:
         '200':
@@ -46,42 +46,27 @@ paths:
           schema:
             $ref: '#/definitions/runtimeError'
       parameters:
-        - name: paging.page
-          description: page.
+        - name: page
+          description: page(default 1)
           in: query
           required: false
           type: integer
           format: int32
-        - name: paging.pageSize
-          description: page size.
+        - name: pageSize
+          description: page size(default 10)
           in: query
           required: false
           type: integer
           format: int32
-        - name: sort.sortBy
-          description: SortBy.
-          in: query
-          required: false
-          type: string
-          enum:
-            - SORT_BY_UNSPECIFIED
-            - SORT_BY_PHONE_CREATED_AT
-          default: SORT_BY_UNSPECIFIED
-        - name: sort.isAscending
-          description: ascending or descending.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
         - name: type
-          description: type.
+          description: type of import
           in: query
           required: false
           type: string
           enum:
-            - ENTITY_TYPE_UNSPECIFIED
-            - ENTITY_TYPE_PHONE_NUMBER
-          default: ENTITY_TYPE_UNSPECIFIED
+            - PHONE_NUMBER
+            - MERCHANT
+          default: PHONE_NUMBER
       tags:
         - BlackListService
     post:
@@ -366,9 +351,8 @@ definitions:
   EntityType:
     type: string
     enum:
-      - ENTITY_TYPE_UNSPECIFIED
-      - ENTITY_TYPE_PHONE_NUMBER
-    default: ENTITY_TYPE_UNSPECIFIED
+      - PHONE_NUMBER
+    default: PHONE_NUMBER
     title: entity type
   GetBlackListUrlResponse:
     type: object
