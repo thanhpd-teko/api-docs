@@ -82,22 +82,43 @@ paths:
           schema:
             $ref: '#/definitions/runtimeError'
       parameters:
-        - name: body
-          in: body
+        - in: formData
+          name: importFile
+          type: file
           required: true
-          schema:
-            $ref: '#/definitions/CreateImportTaskRequest'
+          description: The file to upload.
       tags:
         - BlackListService
-  '/api/v1/import-tasks/{importTaskId}/retry':
-    put:
-      summary: Retry import task
-      operationId: RetryImportTask
+  '/api/v1/import-tasks/{importTaskId}':
+    get:
+      summary: Result import task
+      operationId: ResultImportTask
       responses:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/RetryImportTaskResponse'
+            $ref: '#/definitions/ResultImportTaskResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: importTaskId
+          in: path
+          required: true
+          type: integer
+          format: int32
+      tags:
+        - BlackListService
+  '/api/v1/import-tasks/{importTaskId}/unban':
+    put:
+      summary: Unban by import task
+      operationId: UnbanByImportTask
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/UnbanByImportTaskResponse'
         default:
           description: An unexpected error response
           schema:
@@ -334,13 +355,6 @@ definitions:
     description: |-
       Phone Status
       @exclude Next ID: 6.
-  CreateImportTaskRequest:
-    type: object
-    properties:
-      fileUrl:
-        type: string
-        title: url to get excel file
-    title: Create import task request
   CreateImportTaskResponse:
     type: object
     properties:
@@ -417,9 +431,6 @@ definitions:
         type: integer
         format: int32
         title: import task id
-      fileUrl:
-        type: string
-        title: import task file url
       status:
         $ref: '#/definitions/ImportTaskStatus'
         title: task status
@@ -444,9 +455,6 @@ definitions:
         type: string
         format: date-time
         title: last updated time
-      resultFileUrl:
-        type: string
-        title: result file url
     description: |-
       Import task entity
       @exclude Next ID: 11.
@@ -476,7 +484,7 @@ definitions:
         type: string
         title: ban reason
     title: PhoneStatus
-  RetryImportTaskResponse:
+  UnbanByImportTaskResponse:
     type: object
     properties:
       importTask:
@@ -501,4 +509,18 @@ definitions:
       phoneStatus:
         $ref: '#/definitions/CompletePhoneStatus'
         title: phone status
+    title: update phone status response
+  ResultImportTaskResponse:
+    type: object
+    properties:
+      success:
+        type: array
+        items:
+          $ref: '#/definitions/CompletePhoneStatus'
+        title: success
+      failed:
+        type: array
+        items:
+          $ref: '#/definitions/CompletePhoneStatus'
+        title: failed
     title: update phone status response
