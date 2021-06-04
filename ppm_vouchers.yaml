@@ -10,6 +10,43 @@ produces:
 schemes:
   - https
 paths:
+  /api/vouchers:
+    get:
+      summary: Get vouchers of one platform
+      operationId: GetVouchersUrl
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/GetVouchersResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: platform_code
+          description: code of a platform
+          in: query
+          required: true
+          type: string
+        - name: voucher_status
+          type: string
+          description: filter status of voucher
+          in: query
+          required: false
+        - name: voucher_type
+          type: string
+          description: filter type of voucher
+          in: query
+          required: false
+        - name: query
+          description: can query voucher_code, example voucher_code=ABC filter name contains 'ABC'
+          in: query
+          required: false
+          type: string
+      tags:
+        - PPMExternalAPI
+
   /api/voucher:
     get:
       summary: Get voucher detail
@@ -41,44 +78,28 @@ paths:
           type: string
       tags:
         - PPMExternalAPI
-  /api/vouchers:
-    get:
-      summary: Get vouchers of one platform
-      operationId: GetVouchersUrl
+
+  /api/assign-customer:
+    post:
+      summary: aa
+      operationId: AssignCustomerToVoucherUrl
       responses:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/GetVoucherDetailResponse'
+            $ref: '#/definitions/AssignCustomerResponse'
         default:
           description: An unexpected error response
           schema:
             $ref: '#/definitions/runtimeError'
       parameters:
-        - name: platform_code
-          description: code of a platform
-          in: query
+        - in: body
+          name: body
           required: true
-          type: string
-        - name: voucher_status
-          type: string
-          description: filter status of voucher
-          in: query
-          required: false
-        - name: voucher_type
-          type: string
-          description: filter type of voucher
-          in: query
-          required: false
-        - name: query
-          description: can query voucher_
-          in: query
-          required: false
-          type: string
+          schema:
+            $ref: '#/definitions/AssignCustomerRequest'
       tags:
         - PPMExternalAPI
-
-
 
 definitions:
   GetVoucherDetailResponse:
@@ -89,7 +110,17 @@ definitions:
       message:
         type: string
       results:
-        type: object
+        $ref: '#/definitions/VoucherDetail'
+
+  GetVouchersResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      results:
+        type: array
         items:
           $ref: '#/definitions/VoucherDetail'
         title: results
@@ -130,6 +161,40 @@ definitions:
         items:
           type: number
           description: list promotion ids that voucher can be applied
+  AssignCustomerRequest:
+    type: object
+    properties:
+      voucherCode:
+        type: string
+      phones:
+        type: array
+        items:
+          type: string
+      fromTime:
+        type: string
+        format: date-time
+        description: phone number can be use voucher from time(optional)
+      toTime:
+        type: string
+        format: date-time
+        description: phone number can be use voucher before(optional)
+  AssignCustomerResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      results:
+        type: object
+        properties:
+          appliedPromotions:
+            type: array
+            description: promotion that phone number was assined
+            items:
+              type: number
+        title: results
+
   protobufAny:
     type: object
     properties:
