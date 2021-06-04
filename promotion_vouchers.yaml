@@ -47,7 +47,7 @@ paths:
       tags:
         - PPMExternalAPI
 
-  /api/voucher:
+  /api/voucher/{voucher_code}:
     get:
       summary: Get voucher detail
       operationId: GetVoucherDetailUrl
@@ -61,14 +61,9 @@ paths:
           schema:
             $ref: '#/definitions/runtimeError'
       parameters:
-        - name: platform_code
-          description: code of a platform
-          in: query
-          required: true
-          type: string
         - name: voucher_code
           description: code of a voucher
-          in: query
+          in: path
           required: true
           type: string
         - name: promotion_id
