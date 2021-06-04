@@ -195,25 +195,12 @@ definitions:
               type: number
         title: results
 
-  protobufAny:
-    type: object
-    properties:
-      typeUrl:
-        type: string
-      value:
-        type: string
-        format: byte
   runtimeError:
     type: object
     properties:
-      error:
-        type: string
       code:
-        type: integer
-        format: int32
+        type: string
       message:
         type: string
-      details:
-        type: array
-        items:
-          $ref: '#/definitions/protobufAny'
+      results:
+        type: object
