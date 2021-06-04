@@ -1,0 +1,154 @@
+swagger: "2.0"
+info:
+  title: API Title
+  version: "1.0"
+host: api.server.test
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - https
+paths:
+  /api/voucher:
+    get:
+      summary: Get voucher detail
+      operationId: GetVoucherDetailUrl
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/GetVoucherDetailResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: platform_code
+          description: code of a platform
+          in: query
+          required: true
+          type: string
+        - name: voucher_code
+          description: code of a voucher
+          in: query
+          required: true
+          type: string
+        - name: promotion_id
+          description: promotion that the voucher can be applied
+          in: query
+          required: false
+          type: string
+      tags:
+        - PPMExternalAPI
+  /api/vouchers:
+    get:
+      summary: Get vouchers of one platform
+      operationId: GetVouchersUrl
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/GetVoucherDetailResponse'
+        default:
+          description: An unexpected error response
+          schema:
+            $ref: '#/definitions/runtimeError'
+      parameters:
+        - name: platform_code
+          description: code of a platform
+          in: query
+          required: true
+          type: string
+        - name: voucher_status
+          type: string
+          description: filter status of voucher
+          in: query
+          required: false
+        - name: voucher_type
+          type: string
+          description: filter type of voucher
+          in: query
+          required: false
+        - name: query
+          description: can query voucher_
+          in: query
+          required: false
+          type: string
+      tags:
+        - PPMExternalAPI
+
+
+
+definitions:
+  GetVoucherDetailResponse:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      results:
+        type: object
+        items:
+          $ref: '#/definitions/VoucherDetail'
+        title: results
+
+  VoucherDetail:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Code of the voucher
+      description:
+        type: string
+        description: Name/description of voucher
+      status:
+        type: string
+        description: Status of voucher
+      validFrom:
+        type: string
+        format: date-time
+        description: Voucher can be use from time
+      validTo:
+        type: string
+        format: date-time
+        description: Voucher can be use before time
+      discountPercent:
+        type: number
+        description: Discount percent
+      maxDiscountAmount:
+        type: number
+        description: For case discount fix amount, discount percent=100%, max Discount Amount=discount Amount
+      appliedTerminals:
+        type: array
+        items:
+          type: string
+          description: list terminal's code that voucher can be applied
+      appliedPromotions:
+        type: array
+        items:
+          type: number
+          description: list promotion ids that voucher can be applied
+  protobufAny:
+    type: object
+    properties:
+      typeUrl:
+        type: string
+      value:
+        type: string
+        format: byte
+  runtimeError:
+    type: object
+    properties:
+      error:
+        type: string
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          $ref: '#/definitions/protobufAny'
